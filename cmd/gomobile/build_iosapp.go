@@ -30,8 +30,7 @@ func goIOSBuild(pkg *build.Package) (map[string]bool, error) {
 
 	infoplist := new(bytes.Buffer)
 	if err := infoplistTmpl.Execute(infoplist, infoplistTmplData{
-		// TODO: better bundle id.
-		BundleID: "org.golang.todo." + productName,
+		BundleID: buildBundleId,
 		Name:     strings.Title(path.Base(pkg.ImportPath)),
 	}); err != nil {
 		return nil, err

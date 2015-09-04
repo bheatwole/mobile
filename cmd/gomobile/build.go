@@ -26,7 +26,7 @@ var tmpdir string
 var cmdBuild = &command{
 	run:   runBuild,
 	Name:  "build",
-	Usage: "[-target android|ios] [-o output] [build flags] [package]",
+	Usage: "[-target android|ios] [-bundleid \"org.golang.project\"] [-o output] [build flags] [package]",
 	Short: "compile android APK and iOS app",
 	Long: `
 Build compiles and encodes the app named by the import path.
@@ -42,6 +42,9 @@ manifest is generated.
 
 For -target ios, gomobile must be run on an OS X machine with Xcode
 installed. Support is not complete.
+
+The -bundleid flag is used in conjection with -target ios to specify the
+Bundle Identifier used to select the proper Apple Provisioning Profile.
 
 If the package directory contains an assets subdirectory, its contents
 are copied into the output.
@@ -199,16 +202,17 @@ func printcmd(format string, args ...interface{}) {
 
 // "Build flags", used by multiple commands.
 var (
-	buildA       bool   // -a
-	buildI       bool   // -i
-	buildN       bool   // -n
-	buildV       bool   // -v
-	buildX       bool   // -x
-	buildO       string // -o
-	buildGcflags string // -gcflags
-	buildLdflags string // -ldflags
-	buildTarget  string // -target
-	buildWork    bool   // -work
+	buildA        bool   // -a
+	buildI        bool   // -i
+	buildN        bool   // -n
+	buildV        bool   // -v
+	buildX        bool   // -x
+	buildO        string // -o
+	buildGcflags  string // -gcflags
+	buildLdflags  string // -ldflags
+	buildTarget   string // -target
+	buildBundleId string // -bundleid
+	buildWork     bool   // -work
 )
 
 func addBuildFlags(cmd *command) {
@@ -216,6 +220,7 @@ func addBuildFlags(cmd *command) {
 	cmd.flag.StringVar(&buildGcflags, "gcflags", "", "")
 	cmd.flag.StringVar(&buildLdflags, "ldflags", "", "")
 	cmd.flag.StringVar(&buildTarget, "target", "android", "")
+	cmd.flag.StringVar(&buildBundleId, "bundleid", "org.golang.project", "")
 
 	cmd.flag.BoolVar(&buildA, "a", false, "")
 	cmd.flag.BoolVar(&buildI, "i", false, "")
